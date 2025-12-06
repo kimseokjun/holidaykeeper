@@ -8,11 +8,11 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "holidays",
         indexes = {
-                @Index(name = "idx_country_year", columnList = "country_code, year"),
+                @Index(name = "idx_country_date", columnList = "country_code, date"),
                 @Index(name = "idx_date", columnList = "date")
         },
         uniqueConstraints = {
-                @UniqueConstraint(name = "uk_country_date", columnNames = {"country_code", "date"})
+                @UniqueConstraint(name = "uk_country_date_name", columnNames = {"country_code", "date", "name"})
         })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
