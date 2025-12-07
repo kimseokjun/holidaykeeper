@@ -1,28 +1,30 @@
 package com.planitsquare.holidaykeeper.dto;
 
-import java.time.LocalDate;
-
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import lombok.Getter;
+import java.time.LocalDate;
 
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class HolidaySearchRequest {
 
-	// 필수 조건
-	private Integer year;
-	private String countryCode;
+    private Integer year;
+    private String countryCode;
 
-	// 선택 조건
-	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-	private LocalDate from;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate from;
 
-	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-	private LocalDate to;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate to;
 
-	private String type;
+    private String type;
 
-	private Boolean fixed;
-	private Boolean global;
-
+    private Boolean fixed;
+    private Boolean global;
 }
