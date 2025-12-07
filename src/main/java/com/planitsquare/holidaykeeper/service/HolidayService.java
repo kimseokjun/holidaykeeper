@@ -2,13 +2,18 @@ package com.planitsquare.holidaykeeper.service;
 
 import com.planitsquare.holidaykeeper.client.NagerDateClient;
 import com.planitsquare.holidaykeeper.dto.CountryResponse;
+import com.planitsquare.holidaykeeper.dto.HolidayDto;
 import com.planitsquare.holidaykeeper.dto.HolidayResponse;
+import com.planitsquare.holidaykeeper.dto.HolidaySearchRequest;
+import com.planitsquare.holidaykeeper.dto.PageResponse;
 import com.planitsquare.holidaykeeper.entity.Country;
 import com.planitsquare.holidaykeeper.entity.Holiday;
 import com.planitsquare.holidaykeeper.repository.CountryRepository;
 import com.planitsquare.holidaykeeper.repository.HolidayRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,16 +28,11 @@ public class HolidayService {
     private final CountryRepository countryRepository;
     private final HolidayRepository holidayRepository;
 
-    /**
-     * 최초 데이터 적재: 2020~2025년 전체 국가 공휴일 수집
-     */
     public void loadInitialData() {
         log.info("Starting initial data load...");
 
-        // 1. 국가 목록 가져오기 및 저장
         saveCountries();
 
-        // 2. 각 국가의 2020~2025년 공휴일 저장
         List<Country> countries = countryRepository.findAll();
         int totalHolidays = 0;
         
@@ -46,9 +46,6 @@ public class HolidayService {
         log.info("Initial data load completed. Total holidays saved: {}", totalHolidays);
     }
 
-    /**
-     * 국가 데이터 저장
-     */
     @Transactional
     public void saveCountries() {
         List<CountryResponse> countryResponses = nagerDateClient.getAvailableCountries();
@@ -62,9 +59,6 @@ public class HolidayService {
         log.info("Saved {} countries to database", countries.size());
     }
 
-    /**
-     * 특정 국가의 특정 연도 공휴일 적재 (별도 트랜잭션)
-     */
     @Transactional
     public int loadHolidaysForCountryAndYear(Country country, int year) {
         try {
@@ -86,5 +80,13 @@ public class HolidayService {
             log.warn("Failed to fetch holidays for {} in {}: {}", country.getCountryCode(), year, e.getMessage());
             return 0;
         }
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponse<HolidayDto> searchHolidays(HolidaySearchRequest request, Pageable pageable) {
+        Page<Holiday> holidayPage = holidayRepository.searchHolidays(request, pageable);
+        Page<HolidayDto> dtoPage = holidayPage.map(HolidayDto::from);
+        
+        return PageResponse.of(dtoPage);
     }
 }
