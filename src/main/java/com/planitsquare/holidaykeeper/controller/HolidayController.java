@@ -3,6 +3,7 @@ package com.planitsquare.holidaykeeper.controller;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,6 +48,17 @@ public class HolidayController {
 
 		holidayService.refreshHolidays(year, countryCode);
 		return ResponseEntity.ok("덮어쓰기 성공");
+	}
+
+	//과제 4번
+	@DeleteMapping("/delete")
+	public ResponseEntity<String> deleteHolidays(
+		@RequestParam int year,
+		@RequestParam String countryCode
+	) {
+
+		holidayService.deleteHolidays(year, countryCode);
+		return ResponseEntity.ok("삭제 성공");
 	}
 
 }

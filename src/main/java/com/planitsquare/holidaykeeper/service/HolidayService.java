@@ -98,6 +98,7 @@ public class HolidayService {
 
 	@Transactional
 	public int refreshHolidays(int year, String countryCode) {
+
 		Country country = countryRepository.findById(countryCode)
 			.orElseThrow(() -> new IllegalArgumentException("국가를 찾을 수 없습니다: " + countryCode));
 
@@ -108,14 +109,14 @@ public class HolidayService {
 		}
 
 		List<Holiday> existingHolidays = holidayRepository.findByCountryAndYear(country, year);
-		
+
 		int insertCount = 0;
 		int updateCount = 0;
 
 		for (HolidayResponse apiHoliday : apiHolidays) {
 			Holiday existing = existingHolidays.stream()
-				.filter(h -> h.getDate().equals(apiHoliday.getDate()) 
-						&& h.getName().equals(apiHoliday.getName()))
+				.filter(h -> h.getDate().equals(apiHoliday.getDate())
+					&& h.getName().equals(apiHoliday.getName()))
 				.findFirst()
 				.orElse(null);
 
@@ -130,20 +131,30 @@ public class HolidayService {
 
 		List<Holiday> toDelete = existingHolidays.stream()
 			.filter(existing -> apiHolidays.stream()
-				.noneMatch(api -> api.getDate().equals(existing.getDate()) 
-						&& api.getName().equals(existing.getName())))
+				.noneMatch(api -> api.getDate().equals(existing.getDate())
+					&& api.getName().equals(existing.getName())))
 			.toList();
-		
+
 		holidayRepository.deleteAll(toDelete);
 		int deleteCount = toDelete.size();
 
-		log.info("{} {}년 재동기화 완료 - 추가: {}, 수정: {}, 삭제: {}", 
+		log.info("{} {}년 재동기화 완료 - 추가: {}, 수정: {}, 삭제: {}",
 			countryCode, year, insertCount, updateCount, deleteCount);
 
 		return insertCount + updateCount;
 	}
 
+	@Transactional
+	public void deleteHolidays(int year, String countryCode) {
+		Country country = countryRepository.findById(countryCode)
+			.orElseThrow(() -> new IllegalArgumentException("국가를 찾을 수 없습니다: " + countryCode));
+
+		holidayRepository.deleteByCountryAndYear(country, year);
+		log.info("{} {}년 공휴일 삭제 완료", countryCode, year);
+	}
+
 	private void updateHoliday(Holiday existing, HolidayResponse apiData) {
+
 		existing.update(
 			apiData.getLocalName(),
 			apiData.getFixed(),
