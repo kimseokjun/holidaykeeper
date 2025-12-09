@@ -87,4 +87,16 @@ class HolidayServiceTest {
         assertThat(result).isEqualTo(2);
         verify(holidayRepository, times(1)).save(any(Holiday.class));
     }
+
+    @Test
+    @DisplayName("삭제 - 특정 연도/국가 공휴일 삭제")
+    void deleteHolidays() {
+        Country korea = Country.of("KR", "South Korea");
+        
+        when(countryRepository.findById("KR")).thenReturn(Optional.of(korea));
+
+        holidayService.deleteHolidays(2025, "KR");
+
+        verify(holidayRepository, times(1)).deleteByCountryAndYear(korea, 2025);
+    }
 }
