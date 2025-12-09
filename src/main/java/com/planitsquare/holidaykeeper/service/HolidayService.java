@@ -98,17 +98,60 @@ public class HolidayService {
 
 	@Transactional
 	public int refreshHolidays(int year, String countryCode) {
-
 		Country country = countryRepository.findById(countryCode)
 			.orElseThrow(() -> new IllegalArgumentException("국가를 찾을 수 없습니다: " + countryCode));
 
-		holidayRepository.deleteByCountryAndYear(country, year);
-		log.info("{} {}년 기존 공휴일 삭제", countryCode, year);
+		List<HolidayResponse> apiHolidays = nagerDateClient.getPublicHolidays(year, countryCode);
+		if (apiHolidays == null || apiHolidays.isEmpty()) {
+			log.info("{} {}년 공휴일 데이터 없음", countryCode, year);
+			return 0;
+		}
 
-		int saved = loadHolidaysForCountryAndYear(country, year);
-		log.info("{} {}년 공휴일 {}개 재동기화 완료", countryCode, year, saved);
+		List<Holiday> existingHolidays = holidayRepository.findByCountryAndYear(country, year);
+		
+		int insertCount = 0;
+		int updateCount = 0;
 
-		return saved;
+		for (HolidayResponse apiHoliday : apiHolidays) {
+			Holiday existing = existingHolidays.stream()
+				.filter(h -> h.getDate().equals(apiHoliday.getDate()) 
+						&& h.getName().equals(apiHoliday.getName()))
+				.findFirst()
+				.orElse(null);
+
+			if (existing != null) {
+				updateHoliday(existing, apiHoliday);
+				updateCount++;
+			} else {
+				holidayRepository.save(apiHoliday.toEntity(country));
+				insertCount++;
+			}
+		}
+
+		List<Holiday> toDelete = existingHolidays.stream()
+			.filter(existing -> apiHolidays.stream()
+				.noneMatch(api -> api.getDate().equals(existing.getDate()) 
+						&& api.getName().equals(existing.getName())))
+			.toList();
+		
+		holidayRepository.deleteAll(toDelete);
+		int deleteCount = toDelete.size();
+
+		log.info("{} {}년 재동기화 완료 - 추가: {}, 수정: {}, 삭제: {}", 
+			countryCode, year, insertCount, updateCount, deleteCount);
+
+		return insertCount + updateCount;
+	}
+
+	private void updateHoliday(Holiday existing, HolidayResponse apiData) {
+		existing.update(
+			apiData.getLocalName(),
+			apiData.getFixed(),
+			apiData.getGlobal(),
+			apiData.getCounties(),
+			apiData.getLaunchYear(),
+			apiData.getTypesAsString()
+		);
 	}
 
 }

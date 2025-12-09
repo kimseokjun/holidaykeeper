@@ -67,4 +67,14 @@ public class Holiday {
                 .types(types)
                 .build();
     }
+
+    public void update(String localName, Boolean fixed, Boolean global, 
+                       String counties, Integer launchYear, String types) {
+        this.localName = localName;
+        this.fixed = fixed;
+        this.global = global;
+        this.counties = counties;
+        this.launchYear = launchYear;
+        this.types = types;
+    }
 }
