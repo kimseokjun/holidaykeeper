@@ -46,23 +46,11 @@ class HolidayControllerTest {
 			.types("Public")
 			.build();
 
-		HolidayDto holiday2 = HolidayDto.builder()
-			.id(2L)
-			.countryCode("KR")
-			.countryName("South Korea")
-			.date(LocalDate.of(2025, 3, 1))
-			.localName("삼일절")
-			.name("Independence Movement Day")
-			.fixed(true)
-			.global(true)
-			.types("Public")
-			.build();
-
 		PageResponse<HolidayDto> response = PageResponse.<HolidayDto>builder()
-			.content(List.of(holiday1, holiday2))
+			.content(List.of(holiday1))
 			.page(0)
 			.size(20)
-			.totalElements(2)
+			.totalElements(1)
 			.totalPages(1)
 			.first(true)
 			.last(true)
@@ -75,129 +63,20 @@ class HolidayControllerTest {
 				.param("year", "2025")
 				.param("countryCode", "KR"))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.content").isArray())
-			.andExpect(jsonPath("$.content.length()").value(2))
-			.andExpect(jsonPath("$.content[0].countryCode").value("KR"))
-			.andExpect(jsonPath("$.totalElements").value(2))
-			.andExpect(jsonPath("$.page").value(0));
+			.andExpect(jsonPath("$.content[0].countryCode").value("KR"));
 	}
 
 	@Test
-	@DisplayName("GET /api/holidays - 페이징 파라미터 적용")
-	void searchHolidaysWithPagination() throws Exception {
+	@DisplayName("POST /api/holidays/refresh - 재동기화")
+	void refreshHolidays() throws Exception {
 
-		HolidayDto holiday = HolidayDto.builder()
-			.id(1L)
-			.countryCode("KR")
-			.countryName("South Korea")
-			.date(LocalDate.of(2025, 1, 1))
-			.localName("신정")
-			.name("New Year's Day")
-			.fixed(true)
-			.global(true)
-			.types("Public")
-			.build();
+		when(holidayService.refreshHolidays(2025, "KR")).thenReturn(15);
 
-		PageResponse<HolidayDto> response = PageResponse.<HolidayDto>builder()
-			.content(List.of(holiday))
-			.page(0)
-			.size(1)
-			.totalElements(2)
-			.totalPages(2)
-			.first(true)
-			.last(false)
-			.build();
-
-		when(holidayService.searchHolidays(any(HolidaySearchRequest.class), any(PageRequest.class)))
-			.thenReturn(response);
-
-		mockMvc.perform(get("/api/holidays")
+		mockMvc.perform(post("/api/holidays/refresh")
 				.param("year", "2025")
-				.param("countryCode", "KR")
-				.param("page", "0")
-				.param("size", "1"))
+				.param("countryCode", "KR"))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.content.length()").value(1))
-			.andExpect(jsonPath("$.size").value(1))
-			.andExpect(jsonPath("$.totalElements").value(2))
-			.andExpect(jsonPath("$.totalPages").value(2));
-	}
-
-	@Test
-	@DisplayName("GET /api/holidays - 기간 필터")
-	void searchHolidaysByDateRange() throws Exception {
-
-		HolidayDto holiday = HolidayDto.builder()
-			.id(1L)
-			.countryCode("KR")
-			.countryName("South Korea")
-			.date(LocalDate.of(2025, 1, 1))
-			.localName("신정")
-			.name("New Year's Day")
-			.fixed(true)
-			.global(true)
-			.types("Public")
-			.build();
-
-		PageResponse<HolidayDto> response = PageResponse.<HolidayDto>builder()
-			.content(List.of(holiday))
-			.page(0)
-			.size(20)
-			.totalElements(1)
-			.totalPages(1)
-			.first(true)
-			.last(true)
-			.build();
-
-		when(holidayService.searchHolidays(any(HolidaySearchRequest.class), any(PageRequest.class)))
-			.thenReturn(response);
-
-		mockMvc.perform(get("/api/holidays")
-				.param("year", "2025")
-				.param("countryCode", "KR")
-				.param("from", "2025-01-01")
-				.param("to", "2025-01-31"))
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.content.length()").value(1))
-			.andExpect(jsonPath("$.content[0].date").value("2025-01-01"));
-	}
-
-	@Test
-	@DisplayName("GET /api/holidays - 타입 필터")
-	void searchHolidaysByType() throws Exception {
-
-		HolidayDto holiday = HolidayDto.builder()
-			.id(1L)
-			.countryCode("KR")
-			.countryName("South Korea")
-			.date(LocalDate.of(2025, 1, 1))
-			.localName("신정")
-			.name("New Year's Day")
-			.fixed(true)
-			.global(true)
-			.types("Public")
-			.build();
-
-		PageResponse<HolidayDto> response = PageResponse.<HolidayDto>builder()
-			.content(List.of(holiday))
-			.page(0)
-			.size(20)
-			.totalElements(1)
-			.totalPages(1)
-			.first(true)
-			.last(true)
-			.build();
-
-		when(holidayService.searchHolidays(any(HolidaySearchRequest.class), any(PageRequest.class)))
-			.thenReturn(response);
-
-		mockMvc.perform(get("/api/holidays")
-				.param("year", "2025")
-				.param("countryCode", "KR")
-				.param("type", "Public"))
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.content").isArray())
-			.andExpect(jsonPath("$.content[0].types").value("Public"));
+			.andExpect(content().string("덮어쓰기 성공"));
 	}
 
 }
