@@ -16,7 +16,7 @@
 ### 1. 프로젝트 클론
 
 ```bash
-git clone [repository-url]
+git clone https://github.com/kimseokjun/holidaykeeper.git
 cd holiday-keeper
 ```
 
@@ -159,29 +159,29 @@ DELETE /api/holidays/delete?year=2024&countryCode=KR
 
 ## 주요 기능
 
-### ✅ 1. 초기 데이터 적재
+### 1. 초기 데이터 적재
 
 - Nager.Date API로부터 250개 국가의 2020~2025년 공휴일 데이터 자동 적재
 - 국가별/연도별 트랜잭션 분리로 부분 실패 허용
 - 애플리케이션 시작 시 자동 실행
 
-### ✅ 2. 검색 및 페이징
+### 2. 검색 및 페이징
 
 - QueryDSL 동적 쿼리로 다중 필터 지원
 - 연도, 국가, 기간(from~to), 타입, 고정 여부, 전국 여부 필터링
 - 페이징 처리 (기본 20개)
 
-### ✅ 3. 재동기화 (Upsert)
+### 3. 재동기화 (Upsert)
 
 - 외부 API 최신 데이터와 DB 비교
 - 같은 날짜+이름 있으면 UPDATE, 없으면 INSERT
 - API에 없는 데이터는 DELETE
 
-### ✅ 4. 삭제
+### 4. 삭제
 
 - 특정 연도와 국가의 공휴일 데이터 일괄 삭제
 
-### ✅ 5. 배치 자동화
+### 5. 배치 자동화
 
 - 매년 1월 2일 01:00 KST에 전년도·금년도 데이터 자동 동기화
 - Spring `@Scheduled` 사용
