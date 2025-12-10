@@ -237,13 +237,14 @@ CREATE INDEX idx_date ON holidays (date);
 
 ```
 src/main/java/com/planitsquare/holidaykeeper/
+├── HolidayKeeperApplication.java # 메인 애플리케이션
 ├── config/
 │   ├── DataLoader.java           # 초기 데이터 적재
 │   ├── QuerydslConfig.java       # QueryDSL 설정
 │   ├── RestClientConfig.java     # RestClient 설정
 │   └── SwaggerConfig.java        # Swagger 설정
 ├── controller/
-│   └── HolidayController.java    # 컨트롤러
+│   └── HolidayController.java    # REST API 컨트롤러
 ├── service/
 │   └── HolidayService.java       # 비즈니스 로직
 ├── repository/
@@ -252,16 +253,20 @@ src/main/java/com/planitsquare/holidaykeeper/
 │   ├── HolidayRepositoryCustom.java
 │   └── HolidayRepositoryImpl.java # QueryDSL 구현
 ├── entity/
-│   ├── Country.java
-│   └── Holiday.java
+│   ├── Country.java              # 국가 엔티티
+│   └── Holiday.java              # 공휴일 엔티티
 ├── dto/
-│   ├── HolidaySearchRequest.java
-│   ├── HolidayDto.java
-│   └── PageResponse.java
+│   ├── request/
+│   │   └── HolidaySearchRequest.java # 검색 요청 DTO
+│   └── response/
+│       ├── CountryResponse.java      # 국가 응답 DTO (외부 API)
+│       ├── HolidayResponse.java      # 공휴일 응답 DTO (외부 API)
+│       ├── HolidayDto.java           # 공휴일 응답 DTO
+│       └── PageResponse.java         # 페이징 응답 DTO
 ├── client/
-│   └── NagerDateClient.java     # 외부 API 호출
+│   └── NagerDateClient.java      # 외부 API 호출
 └── scheduler/
-    └── HolidayScheduler.java    # 스케줄러
+    └── HolidayScheduler.java     # 배치 스케줄러
 ```
 
 ## 테스트
