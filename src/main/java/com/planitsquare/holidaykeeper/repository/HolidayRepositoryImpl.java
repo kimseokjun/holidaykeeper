@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 
-import com.planitsquare.holidaykeeper.dto.HolidaySearchRequest;
+import com.planitsquare.holidaykeeper.dto.request.HolidaySearchRequest;
 import com.planitsquare.holidaykeeper.entity.Holiday;
 import com.planitsquare.holidaykeeper.entity.QHoliday;
 import com.querydsl.core.BooleanBuilder;

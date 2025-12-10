@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.planitsquare.holidaykeeper.dto.HolidayDto;
-import com.planitsquare.holidaykeeper.dto.HolidaySearchRequest;
-import com.planitsquare.holidaykeeper.dto.PageResponse;
+import com.planitsquare.holidaykeeper.dto.request.HolidaySearchRequest;
+import com.planitsquare.holidaykeeper.dto.respnose.HolidayDto;
+import com.planitsquare.holidaykeeper.dto.respnose.PageResponse;
 import com.planitsquare.holidaykeeper.service.HolidayService;
 
 import io.swagger.v3.oas.annotations.Operation;

@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
-import com.planitsquare.holidaykeeper.dto.HolidaySearchRequest;
+import com.planitsquare.holidaykeeper.dto.request.HolidaySearchRequest;
 import com.planitsquare.holidaykeeper.entity.Country;
 import com.planitsquare.holidaykeeper.entity.Holiday;
 

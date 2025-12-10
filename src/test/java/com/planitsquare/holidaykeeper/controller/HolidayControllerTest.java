@@ -18,9 +18,9 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.planitsquare.holidaykeeper.dto.HolidayDto;
-import com.planitsquare.holidaykeeper.dto.HolidaySearchRequest;
-import com.planitsquare.holidaykeeper.dto.PageResponse;
+import com.planitsquare.holidaykeeper.dto.request.HolidaySearchRequest;
+import com.planitsquare.holidaykeeper.dto.respnose.HolidayDto;
+import com.planitsquare.holidaykeeper.dto.respnose.PageResponse;
 import com.planitsquare.holidaykeeper.service.HolidayService;
 
 @WebMvcTest(HolidayController.class)

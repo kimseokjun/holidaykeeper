@@ -1,7 +1,7 @@
-package com.planitsquare.holidaykeeper.dto;
-
+package com.planitsquare.holidaykeeper.dto.respnose;
 
 import com.planitsquare.holidaykeeper.entity.Country;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,10 +11,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CountryResponse {
 
-    private String countryCode;
-    private String name;
+	private String countryCode;
+	private String name;
 
-    public Country toEntity() {
-        return Country.of(countryCode, name);
-    }
+	public Country toEntity() {
+
+		return Country.of(countryCode, name);
+	}
+
 }

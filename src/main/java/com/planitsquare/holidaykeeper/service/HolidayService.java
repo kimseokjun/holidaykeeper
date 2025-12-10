@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.planitsquare.holidaykeeper.client.NagerDateClient;
-import com.planitsquare.holidaykeeper.dto.CountryResponse;
-import com.planitsquare.holidaykeeper.dto.HolidayDto;
-import com.planitsquare.holidaykeeper.dto.HolidayResponse;
-import com.planitsquare.holidaykeeper.dto.HolidaySearchRequest;
-import com.planitsquare.holidaykeeper.dto.PageResponse;
+import com.planitsquare.holidaykeeper.dto.request.HolidaySearchRequest;
+import com.planitsquare.holidaykeeper.dto.respnose.CountryResponse;
+import com.planitsquare.holidaykeeper.dto.respnose.HolidayDto;
+import com.planitsquare.holidaykeeper.dto.respnose.HolidayResponse;
+import com.planitsquare.holidaykeeper.dto.respnose.PageResponse;
 import com.planitsquare.holidaykeeper.entity.Country;
 import com.planitsquare.holidaykeeper.entity.Holiday;
 import com.planitsquare.holidaykeeper.repository.CountryRepository;
@@ -146,6 +146,7 @@ public class HolidayService {
 
 	@Transactional
 	public void deleteHolidays(int year, String countryCode) {
+
 		Country country = countryRepository.findById(countryCode)
 			.orElseThrow(() -> new IllegalArgumentException("국가를 찾을 수 없습니다: " + countryCode));
 
