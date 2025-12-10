@@ -13,9 +13,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.planitsquare.holidaykeeper.dto.HolidayDto;
 import com.planitsquare.holidaykeeper.dto.HolidaySearchRequest;
 import com.planitsquare.holidaykeeper.dto.PageResponse;
@@ -27,11 +29,14 @@ class HolidayControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 
+	@Autowired
+	private ObjectMapper objectMapper; // Json으로 변환해주기 위해서 사용
+
 	@MockitoBean
 	private HolidayService holidayService;
 
 	@Test
-	@DisplayName("GET /api/holidays - 연도와 국가로 검색")
+	@DisplayName("POST /api/holidays/search - 연도와 국가로 검색")
 	void searchHolidaysByYearAndCountry() throws Exception {
 
 		HolidayDto holiday1 = HolidayDto.builder()
@@ -59,9 +64,16 @@ class HolidayControllerTest {
 		when(holidayService.searchHolidays(any(HolidaySearchRequest.class), any(PageRequest.class)))
 			.thenReturn(response);
 
-		mockMvc.perform(get("/api/holidays")
-				.param("year", "2025")
-				.param("countryCode", "KR"))
+		HolidaySearchRequest request = HolidaySearchRequest.builder()
+			.year(2025)
+			.countryCode("KR")
+			.build();
+
+		mockMvc.perform(post("/api/holidays/search")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request))
+				.param("page", "0")
+				.param("size", "20"))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.content[0].countryCode").value("KR"));
 	}
