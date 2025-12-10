@@ -269,3 +269,8 @@ src/main/java/com/planitsquare/holidaykeeper/
 - Repository 테스트: QueryDSL 동적 쿼리 검증
 - Service 테스트: 비즈니스 로직 검증
 - Controller 테스트: API 엔드포인트 검증
+
+### ./gradlew clean test 성공 스크린샷
+
+<img width="1535" height="245" alt="image" src="https://github.com/user-attachments/assets/e299c002-9677-477c-90df-36d542af1ed1" />
+
